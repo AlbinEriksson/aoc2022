@@ -42,9 +42,8 @@ impl Solver for Day1 {
     }
 
     fn parse_input(&mut self) {
-        let mut lines = INPUT.lines();
         let mut elf = self.add_elf();
-        while let Some(line) = lines.next() {
+        for line in INPUT.lines() {
             if line.is_empty() {
                 elf = self.add_elf();
             } else {
