@@ -1,8 +1,9 @@
 use std::{env, io::Error};
 
-use solutions::{Solver, day1::Day1, day2::Day2};
+use solutions::{Solver, day1::Day1, day2::Day2, day3::Day3};
 
 pub mod solutions;
+pub mod util;
 
 #[derive(Debug)]
 enum ProcessNameError {
@@ -33,7 +34,8 @@ fn run_solver(day: u8, repeat_count: u32) {
     match day {
         1 => Day1::run(repeat_count),
         2 => Day2::run(repeat_count),
-        3..=25 => (),
+        3 => Day3::run(repeat_count),
+        4..=25 => (),
         _ => unreachable!()
     }
 }
