@@ -1,6 +1,6 @@
 use std::{env, io::Error};
 
-use solutions::{Solver, day1::Day1, day2::Day2, day3::Day3, day4::Day4};
+use solutions::{Solver, day1::Day1, day2::Day2, day3::Day3, day4::Day4, day5::Day5};
 
 pub mod solutions;
 pub mod util;
@@ -36,7 +36,8 @@ fn run_solver(day: u8, repeat_count: u32) {
         2 => Day2::run(repeat_count),
         3 => Day3::run(repeat_count),
         4 => Day4::run(repeat_count),
-        5..=25 => (),
+        5 => Day5::run(repeat_count),
+        6..=25 => (),
         _ => unreachable!()
     }
 }
