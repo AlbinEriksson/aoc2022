@@ -1,4 +1,4 @@
-use std::{slice, fs::File};
+use std::slice;
 
 use super::Solver;
 
