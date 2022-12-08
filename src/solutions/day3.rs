@@ -2,15 +2,15 @@ use crate::util::intset::IntSet;
 
 use super::Solver;
 
-struct Priority(u32);
+struct Priority(usize);
 
 impl TryFrom<char> for Priority {
     type Error = ();
 
     fn try_from(ch: char) -> Result<Self, Self::Error> {
         match ch {
-            ch if ch.is_lowercase() => Ok(Priority(ch as u32 - 'a' as u32 + 1)),
-            ch if ch.is_uppercase() => Ok(Priority(ch as u32 - 'A' as u32 + 27)),
+            ch if ch.is_lowercase() => Ok(Priority(ch as usize - 'a' as usize + 1)),
+            ch if ch.is_uppercase() => Ok(Priority(ch as usize - 'A' as usize + 27)),
             _ => Err(())
         }
     }
@@ -31,7 +31,7 @@ impl<'a> Compartment<'a> {
             })
     }
 
-    fn find_shared_priority(&self, priority_set: &IntSet) -> Option<u32> {
+    fn find_shared_priority(&self, priority_set: &IntSet) -> Option<usize> {
         self.0
             .chars()
             .into_iter()
@@ -69,8 +69,8 @@ pub struct Day3 {
 const INPUT: &str = include_str!("../../input/day3");
 
 impl Solver for Day3 {
-    type Solution1 = u32;
-    type Solution2 = u32;
+    type Solution1 = usize;
+    type Solution2 = usize;
 
     fn new() -> Self {
         Day3 { rucksacks: vec!() }
@@ -86,7 +86,7 @@ impl Solver for Day3 {
         }
     }
 
-    fn solve_part1(&self) -> u32 {
+    fn solve_part1(&self) -> usize {
         self.rucksacks
             .iter()
             .map(|rucksack| {
@@ -96,7 +96,7 @@ impl Solver for Day3 {
             .sum()
     }
 
-    fn solve_part2(&self) -> u32 {
+    fn solve_part2(&self) -> usize {
         self.rucksacks
             .chunks(3)
             .map(|chunk| {
@@ -107,7 +107,7 @@ impl Solver for Day3 {
             .sum()
     }
 
-    fn print_solutions(&self, part1: u32, part2: u32) {
+    fn print_solutions(&self, part1: usize, part2: usize) {
         println!("Total priority of items in both compartments: {part1}");
         println!("Total priority of all group badges: {part2}");
     }
