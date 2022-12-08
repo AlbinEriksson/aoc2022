@@ -57,4 +57,11 @@ impl IntSet {
     pub fn get_max(&self) -> usize {
         self.max
     }
+
+    pub fn count(&self) -> usize {
+        self.items
+            .iter()
+            .map(|item| item.count_ones() as usize)
+            .sum()
+    }
 }
