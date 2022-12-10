@@ -24,6 +24,26 @@ pub struct Day10 {
     crt_width: usize
 }
 
+impl Day10 {
+    fn get_runtime(&self) -> impl Iterator<Item = (usize, isize)> + '_ {
+        iter::once(&Instr::NoOp).cycle().take(1)
+            .chain(self.program.iter())
+            .flat_map(|instr| {
+                iter::once(instr).cycle().take(instr.num_cycles()).enumerate()
+            })
+            .scan(1, |x_reg, (step, instr)| {
+                match (step, instr) {
+                    (0, Instr::AddX(_)) => (),
+                    (1, Instr::AddX(imm)) => *x_reg += *imm as isize,
+                    (0, Instr::NoOp) => (),
+                    (_, _) => panic!()
+                }
+                Some(*x_reg)
+            })
+            .enumerate()
+    }
+}
+
 const INPUT: &str = include_str!("../../input/day10");
 
 impl Solver for Day10 {
@@ -54,21 +74,7 @@ impl Solver for Day10 {
     }
 
     fn solve_part1(&self) -> isize {
-        iter::once(&Instr::NoOp)
-            .chain(self.program.iter())
-            .flat_map(|instr| {
-                iter::once(instr).cycle().take(instr.num_cycles()).enumerate()
-            })
-            .scan(1, |x_reg, (step, instr)| {
-                match (step, instr) {
-                    (0, Instr::AddX(_)) => (),
-                    (1, Instr::AddX(imm)) => *x_reg += *imm as isize,
-                    (0, Instr::NoOp) => (),
-                    (_, _) => panic!()
-                }
-                Some(*x_reg)
-            })
-            .enumerate()
+        self.get_runtime()
             .skip(19).step_by(self.crt_width).take(6)
             .map(|(cycle, x_reg)| (cycle + 1, x_reg))
             .map(|(cycle, x_reg)| x_reg * cycle as isize)
@@ -76,21 +82,7 @@ impl Solver for Day10 {
     }
 
     fn solve_part2(&self) -> String {
-        iter::once(&Instr::NoOp).cycle().take(1)
-            .chain(self.program.iter())
-            .flat_map(|instr| {
-                iter::once(instr).cycle().take(instr.num_cycles()).enumerate()
-            })
-            .scan(1, |x_reg, (step, instr)| {
-                match (step, instr) {
-                    (0, Instr::AddX(_)) => (),
-                    (1, Instr::AddX(imm)) => *x_reg += *imm as isize,
-                    (0, Instr::NoOp) => (),
-                    (_, _) => panic!()
-                }
-                Some(*x_reg)
-            })
-            .enumerate()
+        self.get_runtime()
             .map(|(cycle, x_reg)| (cycle % self.crt_width, x_reg))
             .map(|(col, x_reg)| if (col as isize - x_reg).abs() <= 1 { '#' } else { '.' })
             .interleave('\n', self.crt_width)
