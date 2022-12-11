@@ -62,16 +62,21 @@ impl Solver for Day1 {
     }
 
     fn solve_part2(&self) -> Calories {
-        let mut top3_calories: [Calories; 3] = [0, 0, 0];
-        for calories in self.elves.iter().map(|elf| elf.get_total_calories()) {
-            let index = match top3_calories.binary_search(&calories) {
-                Ok(0) | Err(0) => continue,
-                Ok(index) | Err(index) => index,
-            };
-            top3_calories.copy_within(1..index, 0);
-            top3_calories[index - 1] = calories;
-        }
-        top3_calories.iter().sum()
+        self.elves
+            .iter()
+            .map(|elf| elf.get_total_calories())
+            .fold([0u32, 0, 0], |mut top, calories| {
+                match top.binary_search(&calories) {
+                    Ok(0) | Err(0) => (),
+                    Ok(index) | Err(index) => {
+                        top.copy_within(1..index, 0);
+                        top[index - 1] = calories;
+                    }
+                };
+                top
+            })
+            .iter()
+            .sum()
     }
 
     fn print_solutions(&self, part1: Calories, part2: Calories) {
