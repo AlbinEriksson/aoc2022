@@ -21,7 +21,8 @@ impl Instr {
 
 pub struct Day10 {
     program: Vec<Instr>,
-    crt_width: usize
+    crt_width: usize,
+    crt_height: usize,
 }
 
 impl Day10 {
@@ -51,12 +52,13 @@ impl Solver for Day10 {
     type Solution2 = String;
 
     fn new() -> Self {
-        Day10 { program: vec!(), crt_width: 0 }
+        Day10 { program: vec!(), crt_width: 0, crt_height: 0 }
     }
 
     fn reset(&mut self) {
         self.program.clear();
         self.crt_width = 0;
+        self.crt_height = 0;
     }
 
     fn parse_input(&mut self) {
@@ -71,6 +73,7 @@ impl Solver for Day10 {
             self.program.push(instr);
         }
         self.crt_width = 40;
+        self.crt_height = 6;
     }
 
     fn solve_part1(&self) -> isize {
@@ -83,6 +86,7 @@ impl Solver for Day10 {
 
     fn solve_part2(&self) -> String {
         self.get_runtime()
+            .take(self.crt_width * self.crt_height)
             .map(|(cycle, x_reg)| (cycle % self.crt_width, x_reg))
             .map(|(col, x_reg)| if (col as isize - x_reg).abs() <= 1 { '#' } else { '.' })
             .interleave('\n', self.crt_width)
