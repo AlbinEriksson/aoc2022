@@ -23,9 +23,9 @@ impl<'a> Compartment<'a> {
         self.0
             .chars()
             .into_iter()
-            .fold(IntSet::new(1, 52), |mut set, item| {
+            .fold(IntSet::new([1], [52]), |mut set, item| {
                 if let Ok(priority) = <char as TryInto<Priority>>::try_into(item) {
-                    set.add(priority.0);
+                    set.add(&[priority.0]);
                 }
                 set
             })
@@ -37,7 +37,7 @@ impl<'a> Compartment<'a> {
             .into_iter()
             .map(|ch| <char as TryInto<Priority>>::try_into(ch).unwrap())
             .map(|priority| priority.0)
-            .find(|priority| priority_set.contains(*priority))
+            .find(|priority| priority_set.contains(&[*priority]))
     }
 }
 
@@ -90,7 +90,7 @@ impl Solver for Day3 {
         self.rucksacks
             .iter()
             .map(|rucksack| {
-                let priority_set: IntSet = rucksack.get_first_compartment().get_priority_set();
+                let priority_set = rucksack.get_first_compartment().get_priority_set();
                 rucksack.get_second_compartment().find_shared_priority(&priority_set).unwrap_or(0)
             })
             .sum()

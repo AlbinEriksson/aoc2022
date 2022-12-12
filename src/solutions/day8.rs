@@ -39,23 +39,23 @@ impl Solver for Day8 {
     }
 
     fn solve_part1(&self) -> usize {
-        let mut visible_trees = IntSet::new(0, self.rows * self.cols);
+        let mut visible_trees = IntSet::new([0, 0], [self.rows, self.cols]);
 
-        fn check_visibility(day8: &Day8, row: usize, col: usize, index: usize, max_heights: &mut Vec<i8>, visible_trees: &mut IntSet) {
+        fn check_visibility(day8: &Day8, row: usize, col: usize, index: usize, max_heights: &mut Vec<i8>, visible_trees: &mut IntSet<2>) {
             let height = day8.trees[row][col];
             if height > max_heights[index] {
                 max_heights[index] = height;
-                visible_trees.add(row * day8.cols + col);
+                visible_trees.add(&[row, col]);
             }
         }
 
-        fn check_visible_columns(day8: &Day8, row: usize, max_heights: &mut Vec<i8>, visible_trees: &mut IntSet) {
+        fn check_visible_columns(day8: &Day8, row: usize, max_heights: &mut Vec<i8>, visible_trees: &mut IntSet<2>) {
             for col in 0..day8.cols {
                 check_visibility(day8, row, col, col, max_heights, visible_trees);
             }
         }
 
-        fn check_visible_rows(day8: &Day8, col: usize, max_heights: &mut Vec<i8>, visible_trees: &mut IntSet) {
+        fn check_visible_rows(day8: &Day8, col: usize, max_heights: &mut Vec<i8>, visible_trees: &mut IntSet<2>) {
             for row in 0..day8.rows {
                 check_visibility(day8, row, col, row, max_heights, visible_trees);
             }
