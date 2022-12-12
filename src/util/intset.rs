@@ -7,12 +7,12 @@ pub struct IntSet<const D: usize = 1> {
 
 impl<const D: usize> IntSet<D> {
     pub fn new(min: [usize; D], max: [usize; D]) -> IntSet<D> {
-        let num_items: usize = max.iter().zip(min.iter()).map(|(max, min)| max - min + 1).product();
+        let num_items: usize = max.iter().zip(min.iter()).map(|(max, min)| max - min).product();
         let mut items: Vec<usize> = vec!();
         items.resize((num_items + usize::BITS as usize - 1) / usize::BITS as usize, 0);
         let mut strides = [1usize; D];
         for i in (1..D).rev() {
-            strides[i - 1] *= strides[i] * (max[i] - min[i] + 1);
+            strides[i - 1] *= strides[i] * (max[i] - min[i]);
         }
         IntSet {
             min,
