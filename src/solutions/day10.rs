@@ -27,7 +27,7 @@ pub struct Day10 {
 
 impl Day10 {
     fn get_runtime(&self) -> impl Iterator<Item = (usize, isize)> + '_ {
-        iter::once(&Instr::NoOp).cycle().take(1)
+        iter::once(&Instr::NoOp)
             .chain(self.program.iter())
             .flat_map(|instr| {
                 iter::repeat(instr).take(instr.num_cycles()).enumerate()
