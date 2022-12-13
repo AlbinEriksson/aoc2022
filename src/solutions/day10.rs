@@ -30,7 +30,7 @@ impl Day10 {
         iter::once(&Instr::NoOp).cycle().take(1)
             .chain(self.program.iter())
             .flat_map(|instr| {
-                iter::once(instr).cycle().take(instr.num_cycles()).enumerate()
+                iter::repeat(instr).take(instr.num_cycles()).enumerate()
             })
             .scan(1, |x_reg, (step, instr)| {
                 match (step, instr) {

@@ -103,7 +103,7 @@ impl Solver for Day9 {
         self.motions
             .iter()
             .flat_map(|motion| {
-                iter::once(motion.dir).cycle().take(motion.dist)
+                iter::repeat(motion.dir).take(motion.dist)
             })
             .scan(Pos::default(), |head, dir| {
                 head.move_in_dir(dir);
@@ -121,7 +121,7 @@ impl Solver for Day9 {
         self.motions
             .iter()
             .flat_map(|motion| {
-                iter::once(motion.dir).cycle().take(motion.dist)
+                iter::repeat(motion.dir).take(motion.dist)
             })
             .scan(Pos::default(), |head, dir| {
                 head.move_in_dir(dir);
