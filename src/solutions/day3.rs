@@ -2,15 +2,15 @@ use crate::util::intset::IntSet;
 
 use super::Solver;
 
-struct Priority(usize);
+struct Priority(u8);
 
 impl TryFrom<char> for Priority {
     type Error = ();
 
     fn try_from(ch: char) -> Result<Self, Self::Error> {
         match ch {
-            ch if ch.is_lowercase() => Ok(Priority(ch as usize - 'a' as usize + 1)),
-            ch if ch.is_uppercase() => Ok(Priority(ch as usize - 'A' as usize + 27)),
+            ch if ch.is_lowercase() => Ok(Priority(ch as u8 - 'a' as u8 + 1)),
+            ch if ch.is_uppercase() => Ok(Priority(ch as u8 - 'A' as u8 + 27)),
             _ => Err(())
         }
     }
@@ -23,21 +23,21 @@ impl<'a> Compartment<'a> {
         self.0
             .chars()
             .into_iter()
-            .fold(IntSet::new([1], [53]), |mut set, item| {
+            .fold(IntSet::new(1, 52), |mut set, item| {
                 if let Ok(priority) = <char as TryInto<Priority>>::try_into(item) {
-                    set.add(&[priority.0]);
+                    set.add(priority.0 as isize);
                 }
                 set
             })
     }
 
-    fn find_shared_priority(&self, priority_set: &IntSet) -> Option<usize> {
+    fn find_shared_priority(&self, priority_set: &IntSet) -> Option<u8> {
         self.0
             .chars()
             .into_iter()
             .map(|ch| <char as TryInto<Priority>>::try_into(ch).unwrap())
             .map(|priority| priority.0)
-            .find(|priority| priority_set.contains(&[*priority]))
+            .find(|priority| priority_set.contains(*priority as isize))
     }
 }
 
@@ -93,6 +93,7 @@ impl Solver for Day3 {
                 let priority_set = rucksack.get_first_compartment().get_priority_set();
                 rucksack.get_second_compartment().find_shared_priority(&priority_set).unwrap_or(0)
             })
+            .map(|v| v as usize)
             .sum()
     }
 
@@ -104,6 +105,7 @@ impl Solver for Day3 {
                 priority_set.intersect(&chunk[1].get_both_compartments().get_priority_set());
                 chunk[2].get_both_compartments().find_shared_priority(&priority_set).unwrap()
             })
+            .map(|v| v as usize)
             .sum()
     }
 

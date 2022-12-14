@@ -1,60 +1,53 @@
 use std::{ops::{Index, IndexMut}, collections::BinaryHeap, cmp::Reverse};
 
-use crate::util::intset::IntSet;
+use crate::util::{intset::IntSet, pos::Pos2d};
 
 use super::Solver;
 
 type Cell = i8;
-
-#[derive(PartialEq, Eq, Clone, Copy)]
-struct Pos {
-    x: isize,
-    y: isize
-}
-
-impl Into<[usize; 2]> for Pos {
-    fn into(self) -> [usize; 2] {
-        [self.x as usize, self.y as usize]
-    }
-}
+type Pos = Pos2d<i8>;
 
 impl Index<(usize, usize)> for Day12 {
     type Output = Cell;
 
     fn index(&self, index: (usize, usize)) -> &Self::Output {
-        self.grid.index(index.1 * self.width + index.0)
+        self.grid.index(index.1 * self.width as usize + index.0)
     }
 }
 
 impl IndexMut<(usize, usize)> for Day12 {
     fn index_mut(&mut self, index: (usize, usize)) -> &mut Self::Output {
-        self.grid.index_mut(index.1 * self.width + index.0)
+        self.grid.index_mut(index.1 * self.width as usize + index.0)
     }
 }
 
 #[derive(PartialEq, Eq)]
 struct Cost {
     num_steps: usize,
-    rem_dist: usize,
+    rem_dist: u8,
     pos: Pos
 }
 
 impl PartialOrd for Cost {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        Reverse(self.num_steps + self.rem_dist).partial_cmp(&Reverse(other.num_steps + other.rem_dist))
+        Reverse(self.num_steps + self.rem_dist as usize).partial_cmp(
+            &Reverse(other.num_steps + other.rem_dist as usize)
+        )
     }
 }
 
 impl Ord for Cost {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        Reverse(self.num_steps + self.rem_dist).cmp(&Reverse(other.num_steps + other.rem_dist))
+        Reverse(self.num_steps + self.rem_dist as usize).cmp(
+            &Reverse(other.num_steps + other.rem_dist as usize)
+        )
     }
 }
 
 pub struct Day12 {
     grid: Vec<Cell>,
-    width: usize,
-    height: usize,
+    width: i8,
+    height: i8,
     start: Pos,
     end: Pos
 }
@@ -67,20 +60,23 @@ impl Day12 {
     }
 
     fn is_in_grid(&self, pos: &Pos) -> bool {
-        pos.x >= 0 && pos.x < self.width as isize && pos.y >= 0 && pos.y < self.height as isize
+        pos.x >= 0 && (pos.x as isize) < (self.width as isize) &&
+        pos.y >= 0 && (pos.y as isize) < (self.height as isize)
     }
 
-    fn visit(&self, from: &Cost, visited: &mut IntSet<2>, queue: &mut BinaryHeap<Cost>) {
-        visited.add(&from.pos.into());
+    fn visit(&self, from: &Cost, visited: &mut IntSet, queue: &mut BinaryHeap<Cost>) {
+        visited.add(from.pos.y as isize * self.width as isize + from.pos.x as isize);
         for (dx, dy) in [(-1, 0), (1, 0), (0, -1), (0, 1)] {
             let pos = Pos { x: from.pos.x + dx, y: from.pos.y + dy };
-            if self.is_in_grid(&pos) && self.check_elevation(&from.pos, &pos) && !visited.contains(&pos.into()) {
+            if self.is_in_grid(&pos) && self.check_elevation(&from.pos, &pos) &&
+                !visited.contains(pos.y as isize * self.width as isize + pos.x as isize)
+            {
                 queue.push(self.get_cost(from.num_steps + 1, pos));
             }
         }
     }
 
-    fn a_star(&self, visited: &mut IntSet<2>, queue: &mut BinaryHeap<Cost>) -> Option<usize> {
+    fn a_star(&self, visited: &mut IntSet, queue: &mut BinaryHeap<Cost>) -> Option<usize> {
         while let Some(to_visit) = queue.pop() {
             if to_visit.pos == self.end {
                 return Some(to_visit.num_steps);
@@ -126,21 +122,21 @@ impl Solver for Day12 {
     }
 
     fn parse_input(&mut self) {
-        self.width = INPUT.find('\n').unwrap();
-        self.height = INPUT.chars().filter(|c| *c == '\n').count();
+        self.width = INPUT.find('\n').unwrap() as i8;
+        self.height = INPUT.chars().filter(|c| *c == '\n').count() as i8;
 
-        self.grid = vec![0; (self.width * self.height) as usize];
+        self.grid = vec![0; self.width as usize * self.height as usize];
         for (y, line) in INPUT.lines().enumerate() {
             for (x, ch) in line.chars().enumerate() {
                 let height = match ch {
                     'S' => {
-                        self.start.x = x as isize;
-                        self.start.y = y as isize;
+                        self.start.x = x as i8;
+                        self.start.y = y as i8;
                         0
                     },
                     'E' => {
-                        self.end.x = x as isize;
-                        self.end.y = y as isize;
+                        self.end.x = x as i8;
+                        self.end.y = y as i8;
                         25
                     },
                     'a'..='z' => ch as i8 - 'a' as i8,
@@ -152,21 +148,21 @@ impl Solver for Day12 {
     }
 
     fn solve_part1(&self) -> usize {
-        let mut visited = IntSet::new([0, 0], [self.width as usize, self.height as usize]);
+        let mut visited = IntSet::new(0, self.width as isize * self.height as isize);
         let mut queue: BinaryHeap<Cost> = BinaryHeap::new();
         self.visit(&self.get_cost(0, self.start), &mut visited, &mut queue);
         self.a_star(&mut visited, &mut queue).unwrap()
     }
 
     fn solve_part2(&self) -> usize {
-        let mut visited = IntSet::new([0, 0], [self.width as usize, self.height as usize]);
+        let mut visited = IntSet::new(0, self.width as isize * self.height as isize);
         let mut queue: BinaryHeap<Cost> = BinaryHeap::new();
-        for x in 0..self.width as isize {
-            for y in 0..self.height as isize {
+        for x in 0..self.width {
+            for y in 0..self.height {
                 if self[(x as usize, y as usize)] != 0 {
                     continue
                 }
-                self.visit(&self.get_cost(0, Pos { x, y }), &mut visited, &mut queue);
+                self.visit(&self.get_cost(0, Pos::new(x, y)), &mut visited, &mut queue);
             }
         }
         self.a_star(&mut visited, &mut queue).unwrap()
