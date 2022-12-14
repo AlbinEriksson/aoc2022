@@ -28,6 +28,9 @@ impl IntSet
     }
 
     pub fn remove(&mut self, item: isize) {
+        if item < self.min || item >= self.max {
+            return;
+        }
         let (item_index, bit_offset) = self.bit_position(item);
         self.items[item_index as usize] &= !(1 << bit_offset);
     }
@@ -37,6 +40,9 @@ impl IntSet
     }
 
     pub fn contains(&self, item: isize) -> bool {
+        if item < self.min || item >= self.max {
+            return false;
+        }
         let (item_index, bit_offset) = self.bit_position(item);
         (self.items[item_index as usize] & (1 << bit_offset)) != 0
     }
