@@ -23,7 +23,7 @@ impl<'a> Compartment<'a> {
         self.0
             .chars()
             .into_iter()
-            .fold(IntSet::new(1, 52), |mut set, item| {
+            .fold(IntSet::new(1, 53), |mut set, item| {
                 if let Ok(priority) = <char as TryInto<Priority>>::try_into(item) {
                     set.add(priority.0 as isize);
                 }
