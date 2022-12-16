@@ -1,6 +1,6 @@
 use std::{iter, mem::swap};
 
-use crate::util::{intset::IntSet, pos::Pos2d};
+use crate::util::{intset::IntSet, pos::Pos2d, set::Set};
 
 use super::Solver;
 

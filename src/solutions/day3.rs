@@ -1,4 +1,4 @@
-use crate::util::intset::IntSet;
+use crate::util::{intset::IntSet, set::Set};
 
 use super::Solver;
 

@@ -1,3 +1,5 @@
+use super::set::Set;
+
 pub struct IntSet {
     min: isize,
     max: isize,
@@ -22,40 +24,6 @@ impl IntSet
         (offset / usize::BITS as usize, offset % usize::BITS as usize)
     }
 
-    pub fn add(&mut self, item: isize) {
-        let (item_index, bit_offset) = self.bit_position(item);
-        self.items[item_index as usize] |= 1 << bit_offset;
-    }
-
-    pub fn remove(&mut self, item: isize) {
-        if item < self.min || item >= self.max {
-            return;
-        }
-        let (item_index, bit_offset) = self.bit_position(item);
-        self.items[item_index as usize] &= !(1 << bit_offset);
-    }
-
-    pub fn clear(&mut self) {
-        self.items.fill(0);
-    }
-
-    pub fn contains(&self, item: isize) -> bool {
-        if item < self.min || item >= self.max {
-            return false;
-        }
-        let (item_index, bit_offset) = self.bit_position(item);
-        (self.items[item_index as usize] & (1 << bit_offset)) != 0
-    }
-
-    pub fn intersect(&mut self, other: &IntSet) {
-        if self.min != other.min || self.max != other.max {
-            panic!("Other IntSet must have the same min/max ranges");
-        }
-        for (item, other) in self.items.iter_mut().zip(other.items.iter()) {
-            *item &= other;
-        }
-    }
-
     pub fn get_min(&self) -> isize {
         self.min
     }
@@ -69,5 +37,43 @@ impl IntSet
             .iter()
             .map(|item| item.count_ones() as usize)
             .sum()
+    }
+}
+
+impl Set for IntSet {
+    type Item = isize;
+
+    fn add(&mut self, item: isize) {
+        let (item_index, bit_offset) = self.bit_position(item);
+        self.items[item_index as usize] |= 1 << bit_offset;
+    }
+
+    fn remove(&mut self, item: isize) {
+        if item < self.min || item >= self.max {
+            return;
+        }
+        let (item_index, bit_offset) = self.bit_position(item);
+        self.items[item_index as usize] &= !(1 << bit_offset);
+    }
+
+    fn clear(&mut self) {
+        self.items.fill(0);
+    }
+
+    fn contains(&mut self, item: isize) -> bool {
+        if item < self.min || item >= self.max {
+            return false;
+        }
+        let (item_index, bit_offset) = self.bit_position(item);
+        (self.items[item_index as usize] & (1 << bit_offset)) != 0
+    }
+
+    fn intersect(&mut self, other: &Self) {
+        if self.min != other.min || self.max != other.max {
+            panic!("Other IntSet must have the same min/max ranges");
+        }
+        for (item, other) in self.items.iter_mut().zip(other.items.iter()) {
+            *item &= other;
+        }
     }
 }

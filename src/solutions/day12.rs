@@ -1,6 +1,6 @@
 use std::{ops::{Index, IndexMut}, collections::BinaryHeap, cmp::Reverse};
 
-use crate::util::{intset::IntSet, pos::Pos2d};
+use crate::util::{intset::IntSet, pos::Pos2d, set::Set};
 
 use super::Solver;
 
