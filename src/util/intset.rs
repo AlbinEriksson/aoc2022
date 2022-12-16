@@ -40,9 +40,7 @@ impl IntSet
     }
 }
 
-impl Set for IntSet {
-    type Item = isize;
-
+impl Set<isize> for IntSet {
     fn add(&mut self, item: isize) {
         let (item_index, bit_offset) = self.bit_position(item);
         self.items[item_index as usize] |= 1 << bit_offset;
@@ -60,7 +58,7 @@ impl Set for IntSet {
         self.items.fill(0);
     }
 
-    fn contains(&mut self, item: isize) -> bool {
+    fn contains(&self, item: isize) -> bool {
         if item < self.min || item >= self.max {
             return false;
         }

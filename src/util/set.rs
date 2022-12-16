@@ -1,9 +1,8 @@
-pub trait Set {
-    type Item;
+pub trait Set<Item> {
 
-    fn add(&mut self, item: Self::Item);
-    fn remove(&mut self, item: Self::Item);
+    fn add(&mut self, item: Item);
+    fn remove(&mut self, item: Item);
     fn clear(&mut self);
-    fn contains(&mut self, item: Self::Item) -> bool;
+    fn contains(&self, item: Item) -> bool;
     fn intersect(&mut self, other: &Self);
 }
