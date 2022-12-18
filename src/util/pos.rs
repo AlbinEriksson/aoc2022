@@ -1,4 +1,4 @@
-use std::fmt::Display;
+use std::{fmt::Display, ops::Add};
 
 #[derive(PartialEq, Eq, Clone, Copy, Default, Hash)]
 pub struct Pos2d<T> {
@@ -34,5 +34,13 @@ impl<T> Pos3d<T> {
 impl<T: Display> Display for Pos3d<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "({}, {}, {})", self.x, self.y, self.z)
+    }
+}
+
+impl<T: Add<T, Output = T>> Add<Pos3d<T>> for Pos3d<T> {
+    type Output = Self;
+
+    fn add(self, rhs: Pos3d<T>) -> Self::Output {
+        Self::new(self.x + rhs.x, self.y + rhs.y, self.z + rhs.z)
     }
 }
