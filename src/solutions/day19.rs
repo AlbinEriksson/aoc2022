@@ -107,10 +107,6 @@ fn search(blueprint: &Blueprint, time: u8) -> i16 {
     let mut most_geodes = 0;
     while !states.is_empty() {
         let mut state = states.pop_front().unwrap();
-        most_geodes = most_geodes.max(state.resources.geode);
-        if state.time == 0 {
-            continue;
-        }
 
         let min_possible_geodes = state.resources.geode + state.robots.geode * state.time as i16;
         let potential_geodes = state.time as i16 * (state.time as i16 - 1) / 2;
@@ -144,6 +140,11 @@ fn search(blueprint: &Blueprint, time: u8) -> i16 {
 
         let mut new_resources = state.resources;
         state.robots.produce(&mut new_resources);
+        if state.time == 1 {
+            most_geodes = most_geodes.max(new_resources.geode);
+            continue;
+        }
+
         states.push_back(State { resources: new_resources, robots: state.robots, time: state.time - 1 });
         for robot in [Robot::Ore, Robot::Clay, Robot::Obsidian] {
             if !blueprint.can_afford(robot, &state.resources) {
