@@ -1,3 +1,4 @@
+pub mod array;
 pub mod interleave;
 pub mod intset;
 pub mod pos;
