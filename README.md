@@ -91,7 +91,7 @@ list the puzzles that I got stuck on and how I broke through:
         guess and assume that there exists a path of, say, 1000 minutes, but making such a guess
         risks pruning the shortest path during the actual search.
 
-I have also learned to code less bugs, but you don't wanna hear about that.
+I have also learned to code fewer bugs, but you don't wanna hear about that.
 
 # Rust thoughts
 Iterators. Iterators, everywhere. It's oddly fun to solve a problem using functional paradigms, and
