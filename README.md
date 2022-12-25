@@ -117,3 +117,6 @@ Did you read all that rabble up there? No? Alright, just cheat and get all your 
 ```sh
 cargo run --release <all|1-25> [repeat_count]
 ```
+
+Input files go in the `input/` directory at the root of the repository and are named `day1`, `day2`, ..., `day25` without file
+extension.
