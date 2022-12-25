@@ -37,11 +37,13 @@ pub trait Solver {
 
     fn run(repeat_count: u32) where Self: Sized {
         let mut solver = Self::new();
-        for _ in 0..repeat_count {
+        for i in 0..repeat_count {
             solver.parse_input();
             let part1 = solver.solve_part1();
             let part2 = solver.solve_part2();
-            solver.print_solutions(part1, part2);
+            if i == repeat_count - 1 {
+                solver.print_solutions(part1, part2);
+            }
             solver.reset();
         }
     }
